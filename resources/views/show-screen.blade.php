@@ -1,6 +1,5 @@
 @extends('dashboard.layout')
 @section('content')
-
     <style>
         .header-container {
             display: flex;
@@ -27,18 +26,16 @@
             {{--                projects.</p>--}}
             <div class="container" style="max-width: 1200px;margin-top: 20px" >
                 <div class="main-div">
+                    <div class="form-group">
+                        <p style="font-size: 22px">{{$poll->title}}?</p>
+                    </div>
 
                     <div class="form-group" style="margin-top: 10px">
-                        <label style="color: #707070;font-size: 25px">Admin Link - don't share it. with this link your poll will be modified</label>
-                        <div>
-                            <input value="{{env('APP_URL')}}/show-poll/{{$url}}" style="height: 60px;margin-top: 10px;width: 98%;display: inline" class="form-control" id="admin-link"><span onclick="copyLink('admin-link', 'Admin')" style="font-size: 50px;position: relative;margin-left: -50px;cursor: pointer">&#128456;</span>
+                        @foreach($answers as $key => $answer)
+                        <div id="answers-div">
+                            <p>{{$key+1}}. {{$answer->answer}}</p>
                         </div>
-                    </div>
-                    <div class="form-group" style="margin-top: 10px">
-                        <label style="color: #707070;font-size: 25px">User Link - share it. with this link others can vote</label>
-                        <div>
-                            <input  value="{{env('APP_URL')}}/show-poll/{{$url}}"  style="height: 60px;margin-top: 10px;width: 98%;display: inline" class="form-control" id="user-link"><span onclick="copyLink('user-link', 'User')" style="font-size: 50px;position: relative;margin-left: -50px;cursor: pointer">&#128456;</span>
-                        </div>
+                          @endforeach
                     </div>
 
                 </div>
@@ -74,25 +71,64 @@
     {{--        </div>--}}
     {{--    </div>--}}
     <script>
+        let arrList = [];
+        arrList.push(0);
+        arrList.push(1);
+        let answerIndex = 1;
+        let answersList = [];
+
         function addAnswer(){
+            answerIndex++;
+            arrList.push(answerIndex);
             let answerDiv = document.getElementById('answers-div');
             let input = document.createElement('input');
             input.classList.add('form-control');
             input.style = "height: 60px;margin-top: 10px";
             input.setAttribute('placeholder', 'for example : yes');
+            input.setAttribute('id', 'first-answer-' + answerIndex);
             answerDiv.appendChild(input);
         }
 
-        function copyLink(id, type) {
-            var copyText = document.getElementById(id);
-            copyText.select();
-            copyText.setSelectionRange(0, 99999);
-            document.execCommand("copy");
-            Swal.fire({
-                icon: 'success',
-                title: 'Success',
-                text: type + " link copied",
+        function submit(){
+            let pollTitle = document.getElementById('poll-title').value;
+            let firstAnswer = document.getElementById('first-answer-0').value;
+            if (pollTitle === '' || pollTitle === undefined){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Please write down your poll title',
+                });
+                return
+            }
+            if (firstAnswer === '' || firstAnswer === undefined){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Please write atleast one answer',
+                });
+                return;
+            }
+            for (let i=0;i<arrList.length;i++){
+                answersList.push(document.getElementById('first-answer-' + i).value);
+            }
+            $.ajax({
+                url: `{{env('APP_URL')}}/poll/save`,
+                type: 'POST',
+                dataType: "JSON",
+                data: {"_token": "{{ csrf_token() }}", 'pollTitle' : pollTitle, answersList : JSON.stringify(answersList)},
+                success: function (result) {
+                    if (result.status === true) {
+                        window.location.href = `{{env('APP_URL')}}/copy-urls/${result.url}`
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'server error! Please try again.',
+                        });
+                    }
+                },
             });
+
         }
     </script>
 @endsection

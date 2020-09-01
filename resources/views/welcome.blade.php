@@ -35,8 +35,8 @@
                     <div class="form-group" style="margin-top: 10px">
                         <label style="color: #707070;font-size: 25px">What are the answers?</label>
                         <div id="answers-div">
-                            <input style="height: 60px;margin-top: 10px" class="form-control" placeholder="for example : yes" id="first-answer">
-                            <input style="height: 60px;margin-top: 10px" class="form-control" placeholder="for example : no">
+                            <input style="height: 60px;margin-top: 10px" class="form-control" placeholder="for example : yes" id="first-answer-0">
+                            <input style="height: 60px;margin-top: 10px" class="form-control" placeholder="for example : no" id="first-answer-1">
                         </div>
                         <div style="font-size: 50px;color: #707070;cursor: pointer; width: 50px" onclick="addAnswer()">
                             &plus;
@@ -79,18 +79,27 @@
     {{--        </div>--}}
     {{--    </div>--}}
     <script>
+        let arrList = [];
+        arrList.push(0);
+        arrList.push(1);
+        let answerIndex = 1;
+        let answersList = [];
+
         function addAnswer(){
+            answerIndex++;
+            arrList.push(answerIndex);
           let answerDiv = document.getElementById('answers-div');
           let input = document.createElement('input');
           input.classList.add('form-control');
           input.style = "height: 60px;margin-top: 10px";
           input.setAttribute('placeholder', 'for example : yes');
+          input.setAttribute('id', 'first-answer-' + answerIndex);
             answerDiv.appendChild(input);
         }
 
         function submit(){
           let pollTitle = document.getElementById('poll-title').value;
-          let firstAnswer = document.getElementById('first-answer').value;
+          let firstAnswer = document.getElementById('first-answer-0').value;
           if (pollTitle === '' || pollTitle === undefined){
               Swal.fire({
                   icon: 'error',
@@ -107,7 +116,27 @@
               });
               return;
           }
-          window.location.href = `{{env('APP_URL')}}/copy-urls`
+          for (let i=0;i<arrList.length;i++){
+              answersList.push(document.getElementById('first-answer-' + i).value);
+          }
+            $.ajax({
+                url: `{{env('APP_URL')}}/poll/save`,
+                type: 'POST',
+                dataType: "JSON",
+                data: {"_token": "{{ csrf_token() }}", 'pollTitle' : pollTitle, answersList : JSON.stringify(answersList)},
+                success: function (result) {
+                    if (result.status === true) {
+                        window.location.href = `{{env('APP_URL')}}/copy-urls/${result.url}`
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'server error! Please try again.',
+                        });
+                    }
+                },
+            });
+
         }
     </script>
 @endsection

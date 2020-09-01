@@ -23,6 +23,7 @@ Route::post('kit/{url}/product/save',"ProductController@saveProductInfo");
 Route::post('kit/{url}/product/delete',"ProductController@deleteProduct");
 Route::post('kit/{url}/product/get',"ProductController@getProducts");
 Route::post('kit/{url}/product/files/save',"ProductController@saveFile");
+Route::post('poll/save',"HomeController@savePoll");
 
 Route::post('kit/{url}/company/get',"CompanyController@index");
 
@@ -30,8 +31,14 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/copy-urls', function () {
-    return view('copy-screen');
+Route::get('/copy-urls/{url}', function ($url) {
+    return view('copy-screen')->with(['url' => $url]);
+});
+
+Route::get('/show-poll/{url}', function ($url) {
+    $poll = \App\Poll::where('id', base64_decode($url))->first();
+    $answers = \App\PollAnswers::where('id_poll', $poll->id)->get();
+    return view('show-screen')->with(['poll' => $poll, 'answers' => $answers]);
 });
 Route::get('/login', function () {
     return view('auth/login');
