@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
 
-    <title>Indie Hackers</title>
+    <title>Polling</title>
     <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
     <link href="{{asset('css/stylesheet.css')}}" rel="stylesheet">
     <link href="{{asset('bootstrap.min.css')}}" rel="stylesheet">
