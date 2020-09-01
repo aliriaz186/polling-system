@@ -1,0 +1,81 @@
+.btn-global {
+    background-color: white;
+    font-size: 18px;
+    font-family: Poppins;
+    font-weight: 600;
+    padding: 4px 30px !important;
+    border-radius: 100px;
+    border: 1px solid #5583ff;
+    cursor: pointer;
+    text-decoration: none !important;
+    color: #5583ff !important;
+}
+
+.btn-global-no-hover {
+    background-color: white;
+    font-size: 18px;
+    font-family: Poppins;
+    font-weight: 600;
+    padding: 4px 30px !important;
+    border-radius: 100px;
+    border: 1px solid #5583ff;
+    cursor: pointer;
+    text-decoration: none !important;
+    color: #5583ff !important;
+}
+
+.btn-global:hover {
+    color: #fff !important;
+    background-color: #5583ff;
+}
+.btn-small{
+    padding: 4px 15px !important;
+}
+
+.fields-background{
+    background-color: #f9f9f9;
+}
+.press-contact{
+    padding: 15px; box-shadow: 0 3px 8px 0px rgba(0,0,0,0.25)!important; background-color: #f9f9f9; border-radius: 8px;
+}
+
+.dashboard-button:hover {
+    color: #3a88ec!important;
+}
+.preview-input-field{
+    background: #f9f9f9 !important; border: none !important;
+}
+
+.btn-modern{
+    background: white !important;
+    color: #1f364d !important;
+}
+.btn-modern:hover{
+}
+.top-avatar{
+    width: 50px;height: 50px; border-radius: 50%; border: 3px solid; cursor: pointer;
+}
+.top-avatar:hover{
+   border-color: white;
+}
+.dropdown:hover>.dropdown-menu {
+    display: block;
+}
+
+.main-div{
+    background: #e0e0e0; padding: 100px; border-radius: 25px
+}
+
+.finish-btn{
+    float: right;background: #295a1d!important;color: white!important;padding: 10px 30px; font-size: 22px;border-radius: 25px;font-weight: bold
+}
+
+@media only screen and (max-width: 600px) {
+    .main-div {
+        background: #e0e0e0; padding: 20px!important; border-radius: 25px; padding-bottom: 30px!important;
+    }
+    .finish-btn{
+        padding: 8px 28px; font-size: 15px;border-radius: 25px;
+    }
+
+}
