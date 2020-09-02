@@ -27,16 +27,23 @@
             <div class="container" style="max-width: 1200px;margin-top: 20px" >
                 <div class="main-div">
                     <div class="form-group">
+                        <label style="color: #707070;font-size: 25px">Your Name</label>
+                        <input style="height: 60px;margin-top: 10px" class="form-control" placeholder="your name" id="user-name">
+                    </div>
+                    <div class="form-group">
                         <p style="font-size: 22px">{{$poll->title}}?</p>
                     </div>
-
+                    <input type="hidden" id="total-answers" value="{{count($answers)}}">
                     <div class="form-group" style="margin-top: 10px">
                         @foreach($answers as $key => $answer)
                         <div id="answers-div">
-                            <p>{{$key+1}}. {{$answer->answer}}</p>
+                            <p>{{$key+1}}. <button class="btn btn-outline-dark" id="btn-number-{{$key}}" onclick="selectAnswer('{{$key}}')">{{$answer->answer}}</button></p>
                         </div>
                           @endforeach
                     </div>
+                    <button class="finish-btn" onclick="submit()">
+                        Submit
+                    </button>
 
                 </div>
             </div>
@@ -77,6 +84,16 @@
         let answerIndex = 1;
         let answersList = [];
 
+        function selectAnswer(index) {
+            let totalanswers = document.getElementById('total-answers').value;
+            for (let i = 0; i < totalanswers; i++) {
+                document.getElementById('btn-number-' + i).classList.remove('btn-dark');
+                document.getElementById('btn-number-' + i).classList.remove('btn-outline-dark');
+                document.getElementById('btn-number-' + i).classList.add('btn-outline-dark');
+            }
+            document.getElementById('btn-number-' + index).classList.remove('btn-outline-dark');
+            document.getElementById('btn-number-' + index).classList.add('btn-dark');
+        }
         function addAnswer(){
             answerIndex++;
             arrList.push(answerIndex);
@@ -90,27 +107,23 @@
         }
 
         function submit(){
-            let pollTitle = document.getElementById('poll-title').value;
-            let firstAnswer = document.getElementById('first-answer-0').value;
-            if (pollTitle === '' || pollTitle === undefined){
+            let name = document.getElementById('user-name').value;
+            if (name === '' || name === undefined){
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
-                    text: 'Please write down your poll title',
+                    text: 'Please enter your name',
                 });
                 return
             }
-            if (firstAnswer === '' || firstAnswer === undefined){
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Please write atleast one answer',
-                });
-                return;
-            }
-            for (let i=0;i<arrList.length;i++){
-                answersList.push(document.getElementById('first-answer-' + i).value);
-            }
+            document.getElementById('user-name').value = '';
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: 'Thankyou for you vote.',
+            });
+
+            return;
             $.ajax({
                 url: `{{env('APP_URL')}}/poll/save`,
                 type: 'POST',
